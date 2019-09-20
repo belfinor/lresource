@@ -1,8 +1,8 @@
 package lresource
 
 // @author  Mikhail Kirillov <mikkirillov@yandex.ru>
-// @version 1.000
-// @date    2019-09-18
+// @version 1.001
+// @date    2019-09-20
 
 import (
 	"encoding/base64"
@@ -17,7 +17,7 @@ func init() {
 	data = map[string][]byte{}
 }
 
-func Add(name, content string) {
+func Add(name, contentType string, ts int64, content string) {
 
 	cont, err := base64.StdEncoding.DecodeString(content)
 	if err != nil {

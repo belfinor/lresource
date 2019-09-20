@@ -1,15 +1,17 @@
 package main
 
 // @author  Mikhail Kirillov <mikkirillov@yandex.ru>
-// @version 1.000
-// @date    2019-09-18
+// @version 1.001
+// @date    2019-09-20
 
 import (
 	"encoding/base64"
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"mime"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -60,6 +62,23 @@ func main() {
 
 	result := base64.StdEncoding.EncodeToString(data)
 
+	info, err := os.Lstat(src)
+	if err != nil {
+		panic("read file info failed")
+	}
+
+	ext := filepath.Ext(src)
+	ct := "application/octet-stream"
+
+	if ext != "" {
+		ct = mime.TypeByExtension(ext)
+		if ct == "" {
+			ct = "application/octet-stream"
+		}
+	}
+
+	ts := info.ModTime().Unix()
+
 	builder := strings.Builder{}
 
 	fmt.Fprintf(rw, "package %s\n\n", pkg)
@@ -69,7 +88,7 @@ func main() {
 	fmt.Fprintf(rw, "import(\n\t\"github.com/belfinor/lresource\"\n)\n\n")
 	fmt.Fprintf(rw, "func init() {\n\n")
 
-	fmt.Fprintf(rw, "\tlresource.Add(%s,`\n", strconv.Quote(name))
+	fmt.Fprintf(rw, "\tlresource.Add(%s,%s,%d,`\n", strconv.Quote(name), strconv.Quote(ct), ts)
 
 	i := 0
 
