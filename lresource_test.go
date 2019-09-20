@@ -17,17 +17,17 @@ kwMTIzNDU2Nzg5MDEyMzQ1Njc4OTA=`
 
 	wait := "12345678901234567890123456789012345678901234567890"
 
-	res, err := Get("test")
-	if err != nil {
+	res := Get("test")
+	if res == nil {
 		t.Fatal("Get not work")
 	}
 
-	if string(res) != wait {
+	if string(res.Data) != wait {
 		t.Fatal("Get return wrong data")
 	}
 
-	_, err = Get("test1")
-	if err == nil {
+	res = Get("test1")
+	if res != nil {
 		t.Fatal("return value for unknown source")
 	}
 }

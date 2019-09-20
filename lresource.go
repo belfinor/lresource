@@ -6,15 +6,21 @@ package lresource
 
 import (
 	"encoding/base64"
-	"errors"
 )
 
+type FileData struct {
+	Name        string
+	ContentType string
+	ModifyTime  int64
+	Data        []byte
+}
+
 var (
-	data map[string][]byte
+	data map[string]*FileData
 )
 
 func init() {
-	data = map[string][]byte{}
+	data = map[string]*FileData{}
 }
 
 func Add(name, contentType string, ts int64, content string) {
@@ -24,15 +30,16 @@ func Add(name, contentType string, ts int64, content string) {
 		panic(err)
 	}
 
-	data[name] = cont
+	data[name] = &FileData{
+		Name:        name,
+		ContentType: contentType,
+		ModifyTime:  ts,
+		Data:        cont,
+	}
 }
 
-func Get(name string) ([]byte, error) {
+func Get(name string) *FileData {
 
-	val, has := data[name]
-	if !has {
-		return nil, errors.New("data not found")
-	}
-
-	return val, nil
+	val, _ := data[name]
+	return val
 }
