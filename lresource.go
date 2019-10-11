@@ -1,11 +1,14 @@
 package lresource
 
 // @author  Mikhail Kirillov <mikkirillov@yandex.ru>
-// @version 1.001
-// @date    2019-09-20
+// @version 1.002
+// @date    2019-10-11
 
 import (
+	"bytes"
+	"compress/gzip"
 	"encoding/base64"
+	"io/ioutil"
 )
 
 type FileData struct {
@@ -23,11 +26,22 @@ func init() {
 	data = map[string]*FileData{}
 }
 
-func Add(name, contentType string, ts int64, content string) {
+func Add(name, contentType string, ts int64, arch bool, content string) {
 
 	cont, err := base64.StdEncoding.DecodeString(content)
 	if err != nil {
 		panic(err)
+	}
+
+	if arch {
+		gz, _ := gzip.NewReader(bytes.NewReader(cont))
+
+		data, err := ioutil.ReadAll(gz)
+		if err != nil {
+			panic(err)
+		}
+
+		cont = data
 	}
 
 	data[name] = &FileData{
