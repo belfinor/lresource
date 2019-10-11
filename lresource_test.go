@@ -1,7 +1,7 @@
 package lresource
 
 // @author  Mikhail Kirillov <mikkirillov@yandex.ru>
-// @version 1.002
+// @version 1.003
 // @date    2019-10-11
 
 import (
@@ -13,7 +13,7 @@ func TestResources(t *testing.T) {
 	src := `MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3OD
 kwMTIzNDU2Nzg5MDEyMzQ1Njc4OTA=`
 
-	Add("test", "text/plain", 12312313, false, src)
+	Add("test", "text/plain", false, src)
 
 	wait := "12345678901234567890123456789012345678901234567890"
 

@@ -1,7 +1,7 @@
 package main
 
 // @author  Mikhail Kirillov <mikkirillov@yandex.ru>
-// @version 1.002
+// @version 1.003
 // @date    2019-10-11
 
 import (
@@ -101,11 +101,6 @@ func main() {
 
 	result := base64.StdEncoding.EncodeToString(data)
 
-	info, err := os.Lstat(src)
-	if err != nil {
-		panic("read file info failed")
-	}
-
 	ext := filepath.Ext(src)
 	ct := "application/octet-stream"
 
@@ -116,8 +111,6 @@ func main() {
 		}
 	}
 
-	ts := info.ModTime().Unix()
-
 	builder := strings.Builder{}
 
 	fmt.Fprintf(rw, "package %s\n\n", pkg)
@@ -126,7 +119,7 @@ func main() {
 	fmt.Fprintf(rw, "import (\n\t\"github.com/belfinor/lresource\"\n)\n\n")
 	fmt.Fprintf(rw, "func init() {\n\n")
 
-	fmt.Fprintf(rw, "\tlresource.Add(%s, %s, %d, %t, `\n", strconv.Quote(name), strconv.Quote(ct), ts, !noarch)
+	fmt.Fprintf(rw, "\tlresource.Add(%s, %s, %t, `\n", strconv.Quote(name), strconv.Quote(ct), !noarch)
 
 	i := 0
 

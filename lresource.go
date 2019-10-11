@@ -1,7 +1,7 @@
 package lresource
 
 // @author  Mikhail Kirillov <mikkirillov@yandex.ru>
-// @version 1.002
+// @version 1.003
 // @date    2019-10-11
 
 import (
@@ -14,7 +14,6 @@ import (
 type FileData struct {
 	Name        string
 	ContentType string
-	ModifyTime  int64
 	Data        []byte
 }
 
@@ -26,7 +25,7 @@ func init() {
 	data = map[string]*FileData{}
 }
 
-func Add(name, contentType string, ts int64, arch bool, content string) {
+func Add(name, contentType string, arch bool, content string) {
 
 	cont, err := base64.StdEncoding.DecodeString(content)
 	if err != nil {
@@ -47,7 +46,6 @@ func Add(name, contentType string, ts int64, arch bool, content string) {
 	data[name] = &FileData{
 		Name:        name,
 		ContentType: contentType,
-		ModifyTime:  ts,
 		Data:        cont,
 	}
 }
