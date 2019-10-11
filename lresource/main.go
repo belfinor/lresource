@@ -1,10 +1,12 @@
 package main
 
 // @author  Mikhail Kirillov <mikkirillov@yandex.ru>
-// @version 1.001
-// @date    2019-09-20
+// @version 1.002
+// @date    2019-10-11
 
 import (
+	"bytes"
+	"compress/gzip"
 	"encoding/base64"
 	"flag"
 	"fmt"
@@ -19,34 +21,60 @@ import (
 	"github.com/belfinor/ltime/strftime"
 )
 
+func usage() {
+
+	fmt.Println(`
+Use lresource:
+
+  -name string
+        internal resource name
+  -noarch
+        gzip data
+  -output string
+        output file name
+  -package string
+        package name
+  -source string
+        source file
+ `)
+
+	os.Exit(1)
+}
+
 func main() {
 
 	var pkg string
 	var src string
 	var name string
 	var dest string
+	var noarch bool
 
 	flag.StringVar(&pkg, "package", "", "package name")
 	flag.StringVar(&src, "source", "", "source file")
 	flag.StringVar(&name, "name", "", "internal resource name")
 	flag.StringVar(&dest, "output", "", "output file name")
+	flag.BoolVar(&noarch, "noarch", false, "gzip data")
 
 	flag.Parse()
 
 	if pkg == "" {
-		panic("package name not entered")
+		fmt.Println("package name not entered")
+		usage()
 	}
 
 	if src == "" {
-		panic("source file not entered")
+		fmt.Println("source file not entered")
+		usage()
 	}
 
 	if name == "" {
-		panic("internal resource name not entered")
+		fmt.Println("internal resource name not entered")
+		usage()
 	}
 
 	if dest == "" {
 		panic("output file name not enetered")
+		usage()
 	}
 
 	data, err := ioutil.ReadFile(src)
@@ -59,6 +87,20 @@ func main() {
 		panic(err)
 	}
 	defer rw.Close()
+
+	if !noarch {
+
+		var b bytes.Buffer
+		gz := gzip.NewWriter(&b)
+
+		if _, err := gz.Write(data); err != nil {
+			panic(err)
+		}
+		if err := gz.Close(); err != nil {
+			panic(err)
+		}
+		data = b.Bytes()
+	}
 
 	result := base64.StdEncoding.EncodeToString(data)
 
@@ -88,7 +130,7 @@ func main() {
 	fmt.Fprintf(rw, "import(\n\t\"github.com/belfinor/lresource\"\n)\n\n")
 	fmt.Fprintf(rw, "func init() {\n\n")
 
-	fmt.Fprintf(rw, "\tlresource.Add(%s,%s,%d,`\n", strconv.Quote(name), strconv.Quote(ct), ts)
+	fmt.Fprintf(rw, "\tlresource.Add(%s,%s,%d,%t,`\n", strconv.Quote(name), strconv.Quote(ct), ts, !noarch)
 
 	i := 0
 
