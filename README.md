@@ -1,6 +1,6 @@
 # lresource
 
-lresource is a simple solution for embedding static resource inside of Go binaries.
+lresource is a simple solution for embedding static resources inside of Go binaries.
 
 # Install
 
