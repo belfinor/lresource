@@ -1,8 +1,8 @@
 package lresource
 
 // @author  Mikhail Kirillov <mikkirillov@yandex.ru>
-// @version 1.003
-// @date    2019-10-11
+// @version 1.004
+// @date    2019-11-09
 
 import (
 	"testing"
@@ -30,4 +30,12 @@ kwMTIzNDU2Nzg5MDEyMzQ1Njc4OTA=`
 	if res != nil {
 		t.Fatal("return value for unknown source")
 	}
+
+	Delete("test1")
+
+	if Get("test1") != nil {
+		t.Fatal("Delete not work")
+	}
+
+	Delete("test1")
 }

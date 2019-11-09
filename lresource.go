@@ -1,7 +1,7 @@
 package lresource
 
 // @author  Mikhail Kirillov <mikkirillov@yandex.ru>
-// @version 1.005
+// @version 1.006
 // @date    2019-11-09
 
 import (
@@ -59,6 +59,10 @@ func Add(name, contentType string, arch bool, content string) {
 		ContentType: contentType,
 		Data:        cont,
 	}
+}
+
+func Delete(name string) {
+	delete(data, name)
 }
 
 func Get(name string) *FileData {

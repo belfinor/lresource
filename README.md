@@ -103,6 +103,12 @@ func Get() []byte {
 }
 ```
 
+# Delete resource by name
+
+```go
+lresource.Delete("data/text.txt")
+```
+
 # If resource changed
 
 If the *data.txt* file has changed, you go to the data directory and call *go generate*.
